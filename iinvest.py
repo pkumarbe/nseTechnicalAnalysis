@@ -21,7 +21,7 @@ app = Flask(__name__)
 nse = Nse()
 dayWiseDetail={}
 def fnconnDB():
-	mariadb_connection = mariadb.connect(user='root', password='',database='nsedb')
+	mariadb_connection = mariadb.connect(user='junk', password='junk',database='nsedb')
 	# cursor = mariadb_connection.cursor()
 	return mariadb_connection
 def fnAllStkCode():
