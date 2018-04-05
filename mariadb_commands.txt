@@ -1,0 +1,162 @@
+pip install mariadb-server
+pip install mysql-connector-python
+create database nsedb;
+create table stkname (stksymbol char(20), stkname varchar(100),primary key (stksymbol));
+insert into stkname set stksymbol='ongc';
+
+sudo  mysql -e "insert into stkname set stksymbol=$i" nsedb
+grant all  PRIVILEGES ON *.* TO 'root'@'localhost' identified by 'redhat' with grant option;
+create table stkhistory (sDate Date, symbol char(20),prevclose decimal(10,2), dayopen decimal(10,2),dayclose decimal(10,2), dayhigh decimal(10,2),daylow decimal(10,2),volume bigint,percntchg decimal(10,2));
+#
+create table stkhistory (sDate Date, symbol char(20),prevclose char(10), dayopen char(10),dayclose char(10), dayhigh char(10),daylow char(10),volume char(20),percntchg char(10));
+
+
+create table ttest (name char(20), age int, sal int, sal2 decimal(10,2));
+
+
+
+>>> import mysql.connector as mariadb;
+>>> mariadb_connection= mariadb.connect(user='root', password='redhat',database='nsedb')
+>>> cursor = mariadb_connection.cursor()
+>>> cursor.execute("SELECT * from stkname")
+>>> for i in cursor:
+>>>		print i
+
+from datetime import date
+from nsepy import get_history
+ongc = get_history(symbol='ongc',start=date(2018,1,1),end=date(2018,2,2))
+ongc.iloc[:1,[2]]  --> prints single col
+aa=ongc.to_json(orient='records')
+json.loads(aa)[0]['High']
+
+ongc.to_json(orient="table")
+aa=ongc.to_json(orient="table")
+json.loads(aa)['data'][0]['Date']
+print json.loads(aa)['data'][2]['Date'].split("T")[0]
+
+
+
+
+select * from stkhistory where symbol='20microns' AND sDate >= '2018-01-06' AND sDate <= '2018-02-01';
+ select * from stkhistory where sDate = (select max(sDate) from stkhistory);
+
+  for currentstk in allStkCodes:
+...     stkdetails =  nse.get_quote(str(currentstk))
+...     stkname = stkdetails["companyName"]
+...     cursor = mariadb_connection.cursor()
+...     cursor.execute("INSERT INTO stkname set stkname = '" + stkname + "' where stksymbol = '" + currentstk + "'")
+
+
+
+
+        function serchstkName(stkName){
+           $.ajax({
+             url: "serchstkName";
+             dataType: "json";
+             success: function(serchstkNameJson){
+                for (i in serchstkNameJson ) {
+                        slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + serchstkNameJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                     $("#results").html(stkList);
+             }
+             });
+        }
+
+mariadb_connection = mariadb.connect(user='root', password='redhat',database='nsedb')
+cursor = mariadb_connection.cursor()
+connString = "select max(sDate) from stkhistory where symbol='" + stkcode + "';"
+cursor.execute(connString)
+for i in cursor:
+
+connString = "select sDate, symbol, dayopen, dayhigh, dayLow, dayclose from stkhistory where symbol = '" + stkCode + "' \
+					and sDate between '" + minDate +"'and '" + maxDate + "'"
+
+aa = "{x: new Date(" + str(selectdata[0][0].strftime('%Y,%d,%m')).replace("-",",") + "), y:[" + str(selectdata[0][2])+ "," +str(selectdata[0][3])+","+str(selectdata[0][4]) +","+ str(selectdata[0][5]) + "]}"
+>>> aa
+'{x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}'
+
+
+[
+                        {x: new Date(2012,01,01),y:[5198, 5629, 5159, 5385]},
+                        {x: new Date(2012,02,01),y:[5366, 5499, 5135, 5295]},
+                        {x: new Date(2012,03,01),y:[5296, 5378, 5154, 5248]}
+                   ]
+
+[
+                                  {x: new Date(2017,13,11), y:[189.95,184.2,190.3,183.55]},
+                                  {x: new Date(2017,14,11), y:[184.9,182.0,185.1,181.35]}, 
+                                  {x: new Date(2017,15,11), y:[180.6,177.55,181.4,175.8]}, 
+                                  {x: new Date(2017,16,11), y:[182.5,179.15,182.65,177.1]}, 
+                                  {x: new Date(2017,17,11), y:[182.4,177.6,183.5,177.2]}, 
+                                  {x: new Date(2017,20,11), y:[178.7,180.0,180.45,177.7]},
+                                  {x: new Date(2017,21,11), y:[180.9,180.9,182.0,178.2]},
+                                  {x: new Date(2017,22,11), y:[181.2,181.3,182.75,180.0]}, 
+                                  {x: new Date(2017,23,11), y:[181.9,181.7,182.75,180.5]}, 
+                                  {x: new Date(2017,24,11), y:[182.5,181.0,182.6,180.4]}, 
+                                  {x: new Date(2017,27,11), y:[182.35,184.05,184.45,181.55]}, 
+                                  {x: new Date(2017,28,11), y:[183.3,181.25,183.7,180.0]}, 
+                                  {x: new Date(2017,29,11), y:[181.0,182.45,184.25,181.0]}, 
+                                  {x: new Date(2017,30,11), y:[181.0,180.65,182.0,179.45]}, 
+                                  {x: new Date(2017,01,12), y:[182.0,179.65,183.1,179.0]}, 
+                                  {x: new Date(2017,04,12), y:[181.25,181.6,183.8,180.85]}, 
+                                  {x: new Date(2017,05,12), y:[180.1,178.4,180.7,177.3]}
+                              ]
+
+[						{x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, 
+                              {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, 
+                              {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, 
+                              {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, 
+                              {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, 
+                              {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]} 
+                              ]
+
+
+ [{x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}, {x: new Date(2017,11,13), y:[189.95,184.2,190.3,183.55]}              
+
+
+
+ [
+                                  {x: new Date(2017,13,11), y:[189.95,184.2,190.3,183.55]},
+                                  {x: new Date(2017,14,11), y:[184.9,182.0,185.1,181.35]}, 
+                                  {x: new Date(2017,15,11), y:[180.6,177.55,181.4,175.8]}, 
+                                  {x: new Date(2017,16,11), y:[182.5,179.15,182.65,177.1]}, 
+                                  {x: new Date(2017,17,11), y:[182.4,177.6,183.5,177.2]}, 
+                                  {x: new Date(2017,20,11), y:[178.7,180.0,180.45,177.7]},
+                                  {x: new Date(2017,21,11), y:[180.9,180.9,182.0,178.2]},
+                                  {x: new Date(2017,22,11), y:[181.2,181.3,182.75,180.0]}, 
+                                  {x: new Date(2017,23,11), y:[181.9,181.7,182.75,180.5]}, 
+                                  {x: new Date(2017,24,11), y:[182.5,181.0,182.6,180.4]}, 
+                                  {x: new Date(2017,27,11), y:[182.35,184.05,184.45,181.55]}, 
+                                  {x: new Date(2017,28,11), y:[183.3,181.25,183.7,180.0]}, 
+                                  {x: new Date(2017,29,11), y:[181.0,182.45,184.25,181.0]}, 
+                                  {x: new Date(2017,30,11), y:[181.0,180.65,182.0,179.45]}, 
+                                  {x: new Date(2017,01,12), y:[182.0,189.65,183.1,199.0]}, 
+                                  {x: new Date(2017,04,12), y:[181.25,181.6,183.8,180.85]}, 
+                                  {x: new Date(2017,05,12), y:[180.1,178.4,180.7,177.3]}
+                              ]
+
+
+
+
+ print "['"+str(i[0])+"',"+ str(i[1]) + "," + str(i[2]) +"," + str(i[3]) + "," + str(i[4]) + "],"
+stkCode){
+            var srchUrl = "http://www.moneycontrol.com/stocks/cptmarket/compsearchnew.php?search_data=&cid=&mbsearch_str=&topsearch_type=1&search_str=" + stkCode
+ http://www.moneycontrol.com/india/stockpricequote/oil-drilling-and-exploration/oilnaturalgascorporation/ONG
+ http://www.moneycontrol.com/india/stockpricequote/oil-drilling-and-exploration/oilnaturalgascorporation/charts/technical-chart-analysis/ONG
+
+
+ select sum(dayclose)/20 from (select * from stkhistory where symbol='ongc' order by sDate DESC limit 20) sub order by sDate ASC
+
+ select sum(dayclose)/20 from (select * from stkhistory where symbol='ongc' order by sDate DESC limit 20) sub order by sDate ASC
+ select symbol,sum(dayclose)/20 from stkhistory group by symbol;
+ select symbol,sDate,tclose/30 from (select symbol,sDate,sum(dayclose) as tclose from stkhistory group by symbol) as tmptab
+
+========
+ select * from (select symbol,sDate,dayclose,tclose/30 as tdma from (select symbol,sDate,dayclose,sum(dayclose) as tclose from stkhistory group by symbol) as tmptab) as t2tab where t2tab.dayclose > t2tab.tdma;
+========
+select * from stkhistory where sDate between '2018-02-19' and '2018-02-20' order by symbol;
+
+select * from (select symbol,dayclose,sum(dayclose)/60 as avgclose from stkhistory where sDate between '2017-11-19' and '2018-02-20' group by symbol) tbl where tbl.avgclose > tbl.dayclose;
