@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="static/css/mystyle.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript"></script>
+
+    <script>
+
+    // google.charts.load('current', {'packages':['corechart']});
+    // google.charts.setOnLoadCallback(drawChart);
+ 
+//////////////////////////////////////////////////////////////////
+
+
+  
+
+
+// Candle Stick function graph start
+     function showCst(){
+        var csv = [];
+            $.ajax({
+                url: "candleGraphData",
+                data: {stkCode:"ongc"},
+                dataType: "json",
+                success: function(candleGraphDatason){                    
+                    // $("#results").html(srchStkText.value); 
+                    for (i in candleGraphDatason){
+                        // alert(candleGraphDatason)
+                        csv.push(candleGraphDatason[i])
+                        // alert (csv)      
+                        // plotChart(csv)
+                    }
+                    // alert (csv , csv.length)
+                    // csv=[[2016-00-04,109.000000,122.180000,104.959999,111.389999],
+                    //     [2016-00-04,109.000000,122.180000,104.959999,111.389999],
+                    //     [2016-00-04,109.000000,122.180000,104.959999,111.389999]]
+                         plotChart(csv)
+
+                   }  
+            });
+              
+                // plotChart(csv)
+        // alert (csv.length) 
+     }
+ 
+    function plotChart(csv) {
+        alert ("inside")
+        alert (csv.length)
+        var dataPoints = [];
+
+         for ( i in csv ) {
+                // alert (csv[i])
+                points = csv[i]
+                points = points.replace("[","")
+                points = points.replace("]","")
+                points = points.split(",");
+                alert (points[0])
+                // 2016-00-04,109.000000,122.180000,104.959999,111.389999
+                if (points.length > 0) {
+                    // points = csv[i][0].split(",");
+                    dataPoints.push({
+                        x: points[0],
+                        y: [
+                            parseFloat(points[1]),
+                            parseFloat(points[2]),
+                            parseFloat(points[3]),
+                            parseFloat(points[4])
+                        ]
+                    });
+                }
+            }
+        
+       var chart = new CanvasJS.Chart("graph_results", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            exportEnabled: true,
+            title: {
+                text: "Netflix Stock Price in 2016"
+            },
+            toolTip: {
+                content: "Date: {x}<br /><strong>Price:</strong><br />Open: {y[0]}, Close: {y[3]}<br />High: {y[1]}, Low: {y[2]}"
+            },
+            data: [{
+                type: "candlestick",
+                yValueFormatString: "$##0.00",
+                dataPoints: dataPoints
+             }]
+        });
+        chart.render();
+    }
+
+    // $.get("https://canvasjs.com/data/gallery/javascript/netflix-stock-price.csv", getDataPointsFromCSV);
+      
+// Candle Stick function graph end 
+//////////////////////////////////////////////////////////////////
+
+
+    $( function() {
+           $( "#FromDate" ).datepicker();
+         } );
+      $( function() {
+           $( "#ToDate" ).datepicker();
+         } );
+
+
+//////////////////////////////////////////////////////////////////
+        function printmsg(){
+            var msg = "";
+            $.ajax({
+                url: "hello_msg",
+                data: {results:"hello"},
+                dataType: "json",
+                success: function(helloMsgJson){                    
+                    $("#results").html(srchStkText.value);         
+                   }  
+            });
+        }
+
+        function syncDB(){
+            var msg = "";
+            $.ajax({
+                url: "syncdb",
+                // data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(helloMsgJson){                    
+                    // $("#results").html(srchStkText.value);
+                    alert ("DB Sync Success !!!")         
+                   }  
+            });
+        }
+        function fortest(){
+        // var msg = "fortest";
+        // $.ajax({
+        //     url: "fortest",
+        //     data: {FromDate:FromDate.value,ToDate:ToDate.value},
+        //     dataType: "json",
+        //     success: function(fortestJson){                    
+        //         // $("#results").html(srchStkText.value);  
+        //         alert(fortestJson["results"])       
+        //        }  
+        showsyncstatus();
+    }
+        function showDetails(value){
+            
+            var stkCode = "";
+            var stkDetails = "";
+            var slNo = 0;       
+            $.ajax({
+                url: "showDetails",
+                data: {stkName: value},
+                dataType: "json",
+                success: function(showDetailsJson){
+                    // for (i in showDetailsJson){
+                    //    slNo = slNo + 1;
+                    //    stkDetails += "<table > <tr> <td class=stkListTdSl>"+ slNo + 
+                    //             ".</td><td class = stkListTd>"+ i +
+                    //             ".</td><td class = stkListTd>"+ showDetailsJson[i] + 
+                    //             "</td> </tr></table>";
+                    // }
+                    stkDetails += "<table > <tr> <td class=stkListTdSl >" +"Symbol / Name:- "+ showDetailsJson['symbol'] +
+                                    "</td><td  class = stkListTd>" + showDetailsJson['companyName'] +"</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "1. Previous Close" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['previousClose'] + "</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "2. Day Open" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['open'] + "</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "3. Day Close / Last Traded Price" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['closePrice'] + " / " +
+                                                               showDetailsJson['lastPrice'] + "</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "4. Day High" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['dayHigh'] + "</tr><tr>" +
+                                    "</td><td class ListTd>"+ "5. Day Low" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['dayLow'] + "</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "6. Change in %" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['ChngInPercnt'] + "</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "7. 52 Week High / Low" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['high52'] + " / " +
+                                                                  showDetailsJson['low52'] +"</tr><tr>" +
+                                    "</td><td class = stkListTd>"+ "8. Traded Value" +
+                                    "</td><td class = stkListTd>"+ showDetailsJson['totalTradedVolume'] + "</tr>" +
+                                    "</tr><tr> <input type='button' id= '" + showDetailsJson['symbol'] + "' value='Open on ET' onclick='openOnET(this.id)'/>" + 
+                                    "<input type='button' id= '" + showDetailsJson['symbol'] + "' value='Add to Watch List' onclick='addWatchlist(this.id)'/>" +
+                                    "</tr><tr> <input type='button' id= '" + showDetailsJson['symbol'] + "' value='open on moneycontrol' onclick='openOnMC(this.id)'/>" +
+                                    "</td> </tr></table>";
+
+                    $("#side_results").html(stkDetails);
+                    
+                }
+            });
+           showHistory(value)
+        }
+// ################################################     
+        function openOnMC(stkCode){
+            var srchUrl = "http://www.moneycontrol.com/stocks/cptmarket/compsearchnew.php?search_data=&cid=&mbsearch_str=&topsearch_type=1&search_str=" + stkCode
+            window.open(srchUrl, '_blank');
+            // window.location.assign(srchUrl)
+            // $("#graph_results").load(srchUrl);
+                    }
+// ################################################
+// https://economictimes.indiatimes.com/markets/technical-charts?symbol=ONGC&exchange=NSE&entity=company&periodicity=30
+// https://economictimes.indiatimes.com/markets/technical-charts?symbol=ONGCEQ&exchange=NSE&entity=company&periodicity=
+// https://economictimes.indiatimes.com/markets/technical-charts?symbol= ONGCEQ&exchange=NSE&entity=company&periodicity=
+       function openOnET(stkCode){
+            var srchUrl = "https://economictimes.indiatimes.com/markets/technical-charts?symbol=" + stkCode + 
+            "EQ&exchange=NSE&entity=company&periodicity="
+            // alert (srchUrl)
+            window.open(srchUrl, '_blank');
+
+
+                    }
+// ################################################
+        function serchstkName(stkName){
+            var stkList = "";
+            var slNo = 0;
+            if (stkName . length >= 3) {
+             $.ajax({
+             url: "serchstkName",
+             data: {stkName: stkName},
+             dataType: "json",
+             success: function(serchstkNameJson){
+                for (i in serchstkNameJson ) {
+                        slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.id)' \
+                            value = '" + serchstkNameJson[i][0] + "' \
+                            id = '" +  serchstkNameJson[i][1] + 
+                            "'/></td> </tr></table>";
+                    }
+                 $("#results").html(stkList);    
+             }
+
+             });
+            }
+        }
+// ################################################
+        function searchStk(){
+            // stkInitialChar=value;
+            var stkList = "";
+            var slNo = 0;
+            $.ajax({
+                url: "searchStk",
+                dataType: "json",
+                success: function(searchStkJson){
+                    // stkList = "< table > " ;
+                    for (i in searchStkJson ) {
+                        slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+        function redhammer(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "redhammer",
+                data: {ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    // stkList = "< table > " ;
+                    stkList = "";
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html("-------------------------- Red Hammer --------------------------" +stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+// ##########################
+        function greenhammer(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "greenhammer",
+                data: {ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html("-------------------------- Green Hammer --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+        function bullishmarubozu(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "bullishmarubozu",
+                data: {ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html("-------------------------- Bullish Marubozu --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+        function bearishmarubozu(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "bearishmarubozu",
+                data: {ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- Bearish Marubozu --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+// ##########################
+        function bulishengulfing(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "bulishengulfing",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- Bulish Engulfing --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+
+// ##########################
+        function gapUpOpen(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "gapUpOpen",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- Positive GapUP Open --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+
+
+// ##########################
+        function threeDma(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "threeDma",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- Three months TOP DMA --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// ##########################
+
+// ##########################
+        function top20Gain(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "top20Gain",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- TOP 20 GAINER --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// #########################
+// ##########################
+        function top20looser(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "top20looser",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- TOP 20 LOOSER --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// #########################
+        function top20volume(){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            var slNo = 0;
+            $.ajax({
+                url: "top20volume",
+                data: {FromDate:FromDate.value,ToDate:ToDate.value},
+                dataType: "json",
+                success: function(searchStkJson){
+                    stkList = "" ;
+                    for (i in searchStkJson ) {
+                       slNo = slNo + 1;
+                       stkList += "<table > <tr> <td >" + slNo + ".</td><td>"+ 
+                       "<input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + searchStkJson[i] + 
+                       "'/></td> </tr></table>";
+                    }
+                    $("#results").html(" -------------------------- TOP VOLUME TRADER --------------------------"+stkList);
+                    //$("#results").html("data.results");
+                }
+            });
+        }
+// #########################
+
+        function addWatchlist(stkCode){
+            // stkInitialChar=value;
+            // var stkCode = value;
+            // var slNo = 0;
+            var stkComment = prompt("Please add some Comment if you have !!!"); 
+            // alert (stkComment)
+            $.ajax({
+                url: "addWatchList",
+                data: {stkCode: stkCode,stkComment:stkComment},
+                dataType: "json",
+                success: function(addWatchListJson){
+                   if (addWatchListJson == "Success") {
+                         alert ("Stock Added Sucess ...") 
+                   } else {
+                         alert ("Stock May be added before or something went wrong...") 
+                   }
+
+                  listWatchlist()
+                    //$("#results").html("data.results");
+                }
+            });
+
+        }
+// #########################
+
+       function showsyncstatus(stkCode){
+            $.ajax({
+                url: "showsyncstatus",
+                data: {stkCode: stkCode},
+                dataType: "json",
+                success: function(showsyncstatusJson){
+                   $("#headerDiv2").html(showsyncstatusJson);
+                }
+            });
+            
+        }
+// #########################
+
+// #########################
+
+        function listWatchlist(){
+            var slNo = 0;
+            $.ajax({
+                url: "listWatchList",
+                dataType: "json",
+                success: function(listWatchListJson){
+                stkList = "" ;
+                stkList += "<table class='watchlistTable' > <th class='wlborder'>Sl. No </th>\
+                             <th class='wlborder'> Date Added </th> \
+                             <th class='wlborder'> Symbol </th> \
+                             <th class='wlborder'> Tracked Price </th> \
+                             <th class='wlborder'> Comment </th>\
+                             <th class='wlborder'> Action </th>"
+
+                    for (i in listWatchListJson ) {
+                       slNo = slNo + 1;
+                       stkList += " <tr class='wlborder'> <td >" + slNo + 
+                       ".</td><td class='wlborder' >" + listWatchListJson[i][0] + 
+                       "</td> <td class='wlborder'> <input class='tdbutton' type='button' onclick='showDetails(this.value)' value = '" + listWatchListJson[i][1] + 
+                       "'/></td> <td class='wlborder'>" + listWatchListJson[i][2] + 
+                       "</td><td class='wlborder'> <font color = blue>" + listWatchListJson[i][3] +
+                       "</font></td><td class='wlborder'> <input class='tdbuttonred' type='button' id='" + listWatchListJson[i][1] + "' onclick='removeWatchlist(this.id)' value='Remove' /></td>"
+                        // id='" + listWatchListJson[i][1] + \
+                                         // "' onclick='rmoveWatchlist(this.id)' value='Remove From List' /></td>"    
+
+                    }
+                    stkList += "</tr></td></table>"
+                    // alert (stkList)
+                $("#stkTable").html(stkList);
+            //$("#results").html("data.results");
+                }
+            });
+        }
+// #########################
+
+        function showHistory(stkCode){
+            var slNo = 0; 
+            $.ajax({
+                url: "showHistory",
+                data: {stkCode: stkCode},
+                dataType: "json",
+                success: function(addWatchListJson){
+                stkList = "" ;
+                stkList += "<table class='historyTable' > <th class='wlborder'>No </th>\
+                         <th class='wlborder'> Date </th> \
+                         <th class='wlborder'> Open</th> \
+                         <th class='wlborder'> Close</th>\
+                         <th class='wlborder'> Hgih </th>\
+                         <th class='wlborder'> Low </th>\
+                         <th class='wlborder'> Volume</th>\
+                         <th class='wlborder'> Change%</th>"
+
+                for (i in addWatchListJson ) {
+                   slNo = slNo + 1;
+                   stkList += " <tr class='wlborder'> <td >" + slNo + 
+                   ".</td><td class='wlborder'>" + addWatchListJson[i][0] + 
+                   "</td> <td class='wlborder'>" + addWatchListJson[i][1] + 
+                   "</td> <td class='wlborder'>" + addWatchListJson[i][2] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][3] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][4] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][5] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][6] + "</td>"
+                    // id='" + listWatchListJson[i][1] + \
+                                     // "' onclick='rmoveWatchlist(this.id)' value='Remove From List' /></td>"    
+
+                    }
+                stkList += "</tr></td></table>"
+                $("#graph_results").html(" <font color=red> --- Last 20 Days History for " + stkCode +" ------------   <input class='tdbutton' type='tdbuttonred' id='" + stkCode + "' onclick='showHistoryAll(this.id)' value='Show All' /> </font>" + stkList );
+                    //$("#results").html("data.results");
+                }
+            });
+            // }
+        }
+// #########################
+        function showHistoryAll(stkCode){
+            var slNo = 0; 
+            $.ajax({
+                url: "showHistoryAll",
+                data: {stkCode: stkCode},
+                dataType: "json",
+                success: function(addWatchListJson){
+                stkList = "" ;
+                stkList += "<table class='historyTable' > <th class='wlborder'>No </th>\
+                         <th class='wlborder'> Date </th> \
+                         <th class='wlborder'> Open</th> \
+                         <th class='wlborder'> Close</th>\
+                         <th class='wlborder'> Hgih </th>\
+                         <th class='wlborder'> Low </th>\
+                         <th class='wlborder'> Volume</th>\
+                         <th class='wlborder'> Change%</th>"
+
+                for (i in addWatchListJson ) {
+                   slNo = slNo + 1;
+                   stkList += " <tr class='wlborder'> <td >" + slNo + 
+                   ".</td><td class='wlborder'>" + addWatchListJson[i][0] + 
+                   "</td> <td class='wlborder'>" + addWatchListJson[i][1] + 
+                   "</td> <td class='wlborder'>" + addWatchListJson[i][2] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][3] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][4] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][5] +
+                   "</td> <td class='wlborder'>"  + addWatchListJson[i][6] + "</td>"
+                    // id='" + listWatchListJson[i][1] + \
+                                     // "' onclick='rmoveWatchlist(this.id)' value='Remove From List' /></td>"    
+
+                    }
+                stkList += "</tr></td></table>"
+                $("#graph_results").html(" <font color=red> --- All Days History for " + stkCode +" ------------   <input class='tdbutton' type='tdbuttonred' id='" + stkCode + "' onclick='showHistory(this.id)' value='20 Days Data' /> </font>" + stkList );
+                    //$("#results").html("data.results");
+                }
+            });
+            // }
+        }
+// #########################
+
+        function removeWatchlist(stkCode){
+            var answer = confirm("Remove from watchlist")
+            // alert (answer)
+            if (answer) {
+                $.ajax({
+                    url: "removeWatchlist",
+                    data: {stkCode:stkCode},
+                    dataType: "json",
+                    success: function(addWatchListJson){
+
+                       if (addWatchListJson == "Success") {
+                             alert ("Stock Removed Sucess .....") 
+                       } else {
+                             alert ("something went wrong.....") 
+                       }
+
+                      listWatchlist()
+                        //$("#results").html("data.results");
+                    }
+                });
+            }
+        }
+// #########################
+
+
+// #########################
+    </script>
+<body>
+    <!-- <input type="text" id="srchStkText" onkeyup="searchStk(this.value)"> -->
+<div id="headerDiv"  class="headerDiv" >
+    <input type="text" id="FromDate" size = "4" placeholder="From Date">
+    <input type="text" id="ToDate" size = "4" placeholder="To Date">
+    <input type="button" value="Get History" onclick=""/>
+    <input type="text" id="srchStkText" placeholder="Type Initial 3 chars of Stock Name" onkeyup="serchstkName(this.value)">
+    <input type="button" value="List All Stock" onclick="searchStk()"/>
+    <input type="button" value="SyncDB" onclick="syncDB()"/>
+    <input type="button" value="TestIT" onclick="fortest()"/>
+    <input type="button" value="candlestick" onclick="showCst()"/>
+</div>
+<div id="headerDiv2"  class="headerDiv2" >
+    <!-- showsyncstatus(); -->
+</div>
+<div id="input_results" class="stkInputListDiv">
+    <p><input class='tdbutton' type='button' value="My Watch List" onclick="listWatchlist()" />
+    <p><input class='tdbuttongreen' type='button' value="Bullish Marubozu" onclick="bullishmarubozu()" />
+    <p><input class='tdbuttongreen' type='button' value="Bullish Harami" onclick="bullishharami()" />
+    <p><input class='tdbuttonred' type='button' value="Bearish Marubozu" onclick="bearishmarubozu()" />
+    <p><input class='tdbuttongreen' type='button' value="Green Hammer Stick" onclick="greenhammer()" />
+    <p> <input class='tdbuttonred' type='button' value="Red Hammer Stick" onclick="redhammer()" /></font>
+    <p><input class='tdbuttongreen' type='button' value="Bullish Engulfing" onclick="bulishengulfing()" />
+    <p><input class='tdbuttongreen' type='button' value="Gapup Open" onclick="gapUpOpen()" />   
+    <!-- <p><input class='tdbutton' type='button' value="Hammer Stick" onclick="longhammer()" /> -->
+    <p><input class='tdbuttongreen' type='button' value="Top 20 Gainer" onclick="top20Gain()" />
+    <p><input class='tdbuttonred' type='button' value="Top 20 Looser" onclick="top20looser()" />
+    <p><input class='tdbuttongreen' type='button' value="Top Traded Volume" onclick="top20volume()" />
+    <p><input class='tdbutton' type='button' value="Todays 3 months DMA" onclick="threeDma()" />
+    <p><input class='tdbutton' type='button' value="Todays 20 DMA" />
+
+
+</div>
+
+<div id="results" class="stkListDiv">
+
+</div>
+<div id="side_results" class="stkResultDiv">
+
+</div>
+<div id="graph_results" class="stkGraphDiv">
+    
+
+</div>
+<div id="stkTable" class="stkTableDiv">
+</div>
+
+</body>
+</html>
+<!-- http://www.moneycontrol.com/india/stockpricequote/textiles-weaving/elandapparel/ML10 -->
+<!-- 
