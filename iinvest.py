@@ -10,7 +10,7 @@ import threading
 import multiprocessing as mp
 from multiprocessing import Pool
 from multiprocessing import Process
-import bson
+#import bson
 # -*- coding: utf-8 -*-
 ### Decalre the app
 app = Flask(__name__)
@@ -21,7 +21,7 @@ app = Flask(__name__)
 nse = Nse()
 dayWiseDetail={}
 def fnconnDB():
-	mariadb_connection = mariadb.connect(user='junk', password='junk',database='nsedb')
+	mariadb_connection = mariadb.connect(host= 'Host IP', user='xxx', password='xxx',database='xxx')
 	# cursor = mariadb_connection.cursor()
 	return mariadb_connection
 def fnAllStkCode():
